@@ -18,8 +18,8 @@ $currentPage = basename($_SERVER['PHP_SELF']);
     <?php
     $navItems = [
       ['dashboard.php', 'home', 'Dashboard'],
-      ['bookings.php', 'folder', 'Peminjaman'],
-      ['rooms.php', 'layout', 'Ruangan'],
+      ['peminjaman.php', 'folder', 'Peminjaman'],
+      ['ruangan.php', 'layout', 'Ruangan'],
       ['jadwal.php', 'calendar', 'Jadwal'],
       ['settings.php', 'settings', 'Pengaturan'],
     ];
