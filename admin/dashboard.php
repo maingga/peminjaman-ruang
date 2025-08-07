@@ -14,12 +14,17 @@ include '../inc/header.php';
 
   <?php include 'components/navbar.php'; ?>
 
-  <div class="flex flex-1">
+  <div class="flex flex-1 relative">
+
     <?php include 'components/sidebar.php'; ?>
 
-    <main class="flex-1 p-6 animate-fadeInUp mt-4 md:mt-0">
+    <!-- Overlay untuk mobile -->
+    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden md:hidden transition-opacity duration-300"></div>
+
+    <main class="flex-1 p-6 animate-fadeInUp mt-4 md:mt-0 z-10 relative">
       <h1 class="text-3xl font-bold mb-6 flex items-center gap-2">
-        <i data-feather="activity" class="w-7 h-7 text-blue-500"></i> Selamat Datang, <?= htmlspecialchars($_SESSION['admin']['name']) ?>
+        <i data-feather="activity" class="w-7 h-7 text-blue-500"></i>
+        Selamat Datang, <?= htmlspecialchars($_SESSION['admin']['name']) ?>
       </h1>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
@@ -33,23 +38,16 @@ include '../inc/header.php';
 
       <?php include 'components/countdown-box.php'; ?>
     </main>
+
   </div>
 </div>
 
+<!-- Feather Icons -->
 <script>
   feather.replace();
-  const sidebar = document.getElementById('sidebar');
-  const openBtn = document.getElementById('openSidebar');
-  const closeBtn = document.getElementById('closeSidebar');
-
-  if (openBtn && closeBtn && sidebar) {
-    openBtn.addEventListener('click', () => {
-      sidebar.classList.remove('-translate-x-full');
-    });
-    closeBtn.addEventListener('click', () => {
-      sidebar.classList.add('-translate-x-full');
-    });
-  }
 </script>
+
+<!-- Script interaksi dashboard -->
+<script src="../assets/js/dashboard.js"></script>
 
 <?php include '../inc/footer.php'; ?>
