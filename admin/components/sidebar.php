@@ -21,7 +21,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
       ['peminjaman.php', 'folder', 'Peminjaman'],
       ['ruangan.php', 'layout', 'Ruangan'],
       ['jadwal.php', 'calendar', 'Jadwal'],
-      ['settings.php', 'settings', 'Pengaturan'],
+      ['pengguna.php', 'user', 'Pengguna'],
     ];
 
     foreach ($navItems as [$url, $icon, $label]) {

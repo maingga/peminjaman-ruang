@@ -10,15 +10,15 @@ if (!isset($_SESSION['admin'])) {
 include '../inc/header.php';
 ?>
 
-<div class="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100">
+<div class="min-h-screen flex flex-col bg-gradient-to-br from-blue-50 via-white to-blue-100 dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-gray-100 transition-colors duration-500">
   <?php include 'components/navbar.php'; ?>
   
-  <div class="flex flex-1">
+  <div class="flex flex-1 overflow-hidden">
     <?php include 'components/sidebar.php'; ?>
 
-    <main class="flex-1 p-6 overflow-x-auto">
-      <h1 class="text-3xl font-bold mb-6 flex items-center gap-2">
-        <i data-feather="clipboard" class="w-6 h-6 text-blue-500"></i>
+    <main class="flex-1 p-6 md:p-10 overflow-auto max-w-full">
+      <h1 class="text-3xl font-extrabold mb-8 flex items-center gap-3 select-none text-blue-700 dark:text-blue-400">
+        <i data-feather="clipboard" class="w-7 h-7"></i>
         Daftar Peminjaman Ruangan
       </h1>
 
@@ -36,76 +36,78 @@ include '../inc/header.php';
       }
       ?>
 
-      <div class="overflow-auto bg-white dark:bg-gray-800 shadow-lg rounded-xl ring-1 ring-gray-200 dark:ring-gray-700">
-        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-          <thead class="bg-gray-100 dark:bg-gray-700">
-            <tr class="text-sm font-semibold text-gray-700 dark:text-gray-100 uppercase tracking-wider">
-              <th class="px-5 py-3 text-left">#</th>
-              <th class="px-5 py-3 text-left">Pemohon</th>
-              <th class="px-5 py-3 text-left">Ruangan</th>
-              <th class="px-5 py-3 text-left">Tanggal</th>
-              <th class="px-5 py-3 text-left">Waktu</th>
-              <th class="px-5 py-3 text-left">Status</th>
-              <th class="px-5 py-3 text-left">Aksi</th>
+      <div class="overflow-x-auto bg-white dark:bg-gray-900 rounded-xl shadow-lg ring-1 ring-gray-300 dark:ring-gray-700 max-w-full mx-auto">
+        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 table-auto">
+          <thead class="bg-gray-100 dark:bg-gray-800">
+            <tr class="text-sm font-semibold text-gray-700 dark:text-gray-100 uppercase tracking-wide select-none">
+              <th class="px-4 py-3 text-left w-12">#</th>
+              <th class="px-4 py-3 text-left max-w-[150px] truncate">Pemohon</th>
+              <th class="px-4 py-3 text-left max-w-[140px] truncate">Ruangan</th>
+              <th class="px-4 py-3 text-left whitespace-nowrap">Tanggal</th>
+              <th class="px-4 py-3 text-left whitespace-nowrap">Waktu</th>
+              <th class="px-4 py-3 text-left w-24">Status</th>
+              <th class="px-4 py-3 text-center w-28">Aksi</th>
             </tr>
           </thead>
           <tbody class="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700 text-sm">
-            <?php
-            $no = 1;
-            foreach ($rows as $row):
-              $status = $row['status'];
-              $badge = match ($status) {
-                'approved' => 'bg-green-100 text-green-700 border border-green-500',
-                'rejected' => 'bg-red-100 text-red-700 border border-red-500',
-                default => 'bg-yellow-100 text-yellow-800 border border-yellow-400'
-              };
-            ?>
-              <tr class="hover:bg-gray-50 dark:hover:bg-gray-800 transition">
-                <td class="px-5 py-3 font-medium"><?= $no++ ?></td>
-                <td class="px-5 py-3">
-                  <?= htmlspecialchars($row['name']) ?><br>
-                  <span class="text-xs text-gray-500"><?= htmlspecialchars($row['dinas']) ?> - <?= htmlspecialchars($row['bidang']) ?></span>
-                </td>
-                <td class="px-5 py-3"><?= htmlspecialchars($row['room_name']) ?></td>
-                <td class="px-5 py-3"><?= date('d M Y', strtotime($row['date'])) ?></td>
-                <td class="px-5 py-3"><?= $row['start_time'] ?> - <?= $row['end_time'] ?></td>
-                <td class="px-5 py-3">
-                  <span class="text-xs font-semibold px-2 py-1 rounded-full inline-block <?= $badge ?>">
-                    <?= ucfirst($status) ?>
-                  </span>
-                </td>
-                <td class="px-5 py-3">
-                  <div class="flex gap-2">
-                    <?php if ($status === 'pending') : ?>
-                      <form action="approve.php" method="post" class="inline">
-                        <input type="hidden" name="id" value="<?= $row['id'] ?>">
-                        <input type="hidden" name="action" value="approve">
-                        <button type="submit" title="Setujui" class="bg-green-600 hover:bg-green-700 text-white p-1 rounded-full transition">
-                          <i data-feather="check" class="w-4 h-4"></i>
-                        </button>
-                      </form>
-                      <form action="approve.php" method="post" class="inline">
-                        <input type="hidden" name="id" value="<?= $row['id'] ?>">
-                        <input type="hidden" name="action" value="reject">
-                        <button type="submit" title="Tolak" class="bg-red-600 hover:bg-red-700 text-white p-1 rounded-full transition">
-                          <i data-feather="x" class="w-4 h-4"></i>
-                        </button>
-                      </form>
-                    <?php endif; ?>
-
-                    <!-- Tombol Lihat Detail -->
-                    <a href="detail.php?id=<?= $row['id'] ?>" title="Lihat Detail"
-                      class="bg-blue-600 hover:bg-blue-700 text-white p-1 rounded-full transition">
-                      <i data-feather="info" class="w-4 h-4"></i>
-                    </a>
-                  </div>
-                </td>
-              </tr>
-            <?php endforeach; ?>
             <?php if (count($rows) === 0): ?>
               <tr>
-                <td colspan="7" class="text-center px-5 py-4 text-gray-500 italic">Belum ada peminjaman.</td>
+                <td colspan="7" class="text-center px-4 py-6 text-gray-500 italic select-none">Belum ada peminjaman.</td>
               </tr>
+            <?php else: ?>
+              <?php
+              $no = 1;
+              foreach ($rows as $row):
+                $status = $row['status'];
+                $badge = match ($status) {
+                  'approved' => 'bg-green-100 text-green-800 border border-green-500',
+                  'rejected' => 'bg-red-100 text-red-800 border border-red-500',
+                  default => 'bg-yellow-100 text-yellow-800 border border-yellow-400'
+                };
+              ?>
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-150">
+                  <td class="px-4 py-3 font-medium whitespace-nowrap"><?= $no++ ?></td>
+                  <td class="px-4 py-3 max-w-[150px] truncate" title="<?= htmlspecialchars($row['name']) ?>">
+                    <?= htmlspecialchars($row['name']) ?><br>
+                    <span class="text-xs text-gray-500 dark:text-gray-400 select-text"><?= htmlspecialchars($row['dinas']) ?> - <?= htmlspecialchars($row['bidang']) ?></span>
+                  </td>
+                  <td class="px-4 py-3 max-w-[140px] truncate" title="<?= htmlspecialchars($row['room_name']) ?>">
+                    <?= htmlspecialchars($row['room_name']) ?>
+                  </td>
+                  <td class="px-4 py-3 whitespace-nowrap"><?= date('d M Y', strtotime($row['date'])) ?></td>
+                  <td class="px-4 py-3 whitespace-nowrap"><?= htmlspecialchars($row['start_time']) ?> - <?= htmlspecialchars($row['end_time']) ?></td>
+                  <td class="px-4 py-3 whitespace-nowrap">
+                    <span class="inline-block text-xs font-semibold px-3 py-1 rounded-full <?= $badge ?> select-none">
+                      <?= ucfirst($status) ?>
+                    </span>
+                  </td>
+                  <td class="px-4 py-3 text-center whitespace-nowrap">
+                    <div class="flex justify-center gap-2">
+                      <?php if ($status === 'pending'): ?>
+                        <form action="approve.php" method="post" class="inline">
+                          <input type="hidden" name="id" value="<?= $row['id'] ?>">
+                          <input type="hidden" name="action" value="approve">
+                          <button type="submit" aria-label="Setujui peminjaman" title="Setujui" class="bg-green-600 hover:bg-green-700 active:bg-green-800 text-white p-2 rounded-full transition shadow-md focus:outline-none focus:ring-2 focus:ring-green-400">
+                            <i data-feather="check" class="w-4 h-4"></i>
+                          </button>
+                        </form>
+                        <form action="approve.php" method="post" class="inline">
+                          <input type="hidden" name="id" value="<?= $row['id'] ?>">
+                          <input type="hidden" name="action" value="reject">
+                          <button type="submit" aria-label="Tolak peminjaman" title="Tolak" class="bg-red-600 hover:bg-red-700 active:bg-red-800 text-white p-2 rounded-full transition shadow-md focus:outline-none focus:ring-2 focus:ring-red-400">
+                            <i data-feather="x" class="w-4 h-4"></i>
+                          </button>
+                        </form>
+                      <?php endif; ?>
+
+                      <a href="detail.php?id=<?= $row['id'] ?>" aria-label="Lihat detail peminjaman" title="Lihat Detail"
+                         class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white p-2 rounded-full transition shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400">
+                        <i data-feather="info" class="w-4 h-4"></i>
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+              <?php endforeach; ?>
             <?php endif; ?>
           </tbody>
         </table>

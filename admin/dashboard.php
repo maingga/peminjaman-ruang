@@ -10,7 +10,7 @@ if (!isset($_SESSION['admin'])) {
 include '../inc/header.php';
 ?>
 
-<div class="min-h-screen flex flex-col bg-gradient-to-br from-blue-100 via-white to-blue-200 dark:from-gray-900 dark:to-gray-800 text-gray-800 dark:text-gray-100 transition duration-300">
+<div class="min-h-screen flex flex-col bg-gradient-to-br from-blue-100 via-white to-blue-200 dark:from-gray-900 dark:to-gray-800 text-gray-800 dark:text-gray-100 transition-colors duration-300">
 
   <?php include 'components/navbar.php'; ?>
 
@@ -19,12 +19,12 @@ include '../inc/header.php';
     <?php include 'components/sidebar.php'; ?>
 
     <!-- Overlay untuk mobile -->
-    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden md:hidden transition-opacity duration-300"></div>
+    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden md:hidden transition-opacity duration-300 pointer-events-none"></div>
 
-    <main class="flex-1 p-6 animate-fadeInUp mt-4 md:mt-0 z-10 relative">
-      <h1 class="text-3xl font-bold mb-6 flex items-center gap-2">
-        <i data-feather="activity" class="w-7 h-7 text-blue-500"></i>
-        Selamat Datang, <?= htmlspecialchars($_SESSION['admin']['name']) ?>
+    <main class="flex-1 p-6 animate-fadeInUp mt-4 md:mt-0 z-10 relative max-w-7xl mx-auto">
+      <h1 class="text-3xl font-extrabold mb-6 flex items-center gap-3 select-none text-blue-600 dark:text-blue-400">
+        <i data-feather="activity" class="w-7 h-7"></i>
+        Selamat Datang, <span class="capitalize"><?= htmlspecialchars($_SESSION['admin']['name']) ?></span>
       </h1>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">

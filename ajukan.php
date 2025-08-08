@@ -1,65 +1,93 @@
 <?php
-require_once 'inc/db.php';
 session_start();
+require_once 'inc/db.php';
 
 $errors = [];
 $success = '';
 
+// Generate CSRF token jika belum ada
 if (empty($_SESSION['csrf_token'])) {
-  $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  $name = trim(htmlspecialchars($_POST['name']));
-  $dinas = trim(htmlspecialchars($_POST['dinas']));
-  $bidang = trim(htmlspecialchars($_POST['bidang']));
-  $phone = trim(htmlspecialchars($_POST['phone']));
-  $room_id = $_POST['room_id'];
-  $date = $_POST['date'];
-  $start_time = $_POST['start_time'];
-  $end_time = $_POST['end_time'];
-  $csrf_token = $_POST['csrf_token'];
+    // Ambil & sanitasi input
+    $name       = trim(htmlspecialchars($_POST['name']));
+    $dinas      = trim(htmlspecialchars($_POST['dinas']));
+    $bidang     = trim(htmlspecialchars($_POST['bidang']));
+    $phone      = trim(htmlspecialchars($_POST['phone']));
+    $room_id    = $_POST['room_id'];
+    $date       = $_POST['date'];
+    $start_time = $_POST['start_time'];
+    $end_time   = $_POST['end_time'];
+    $csrf_token = $_POST['csrf_token'];
 
-  if ($csrf_token !== $_SESSION['csrf_token']) {
-    $errors[] = "Token tidak valid.";
-  }
-
-  if (!$name || !$dinas || !$bidang || !$phone || !$room_id || !$date || !$start_time || !$end_time) {
-    $errors[] = "Semua kolom wajib diisi.";
-  }
-
-  if (!preg_match('/^[0-9]{10,15}$/', $phone)) {
-    $errors[] = "Nomor HP tidak valid.";
-  }
-
-  if ($start_time >= $end_time) {
-    $errors[] = "Jam selesai harus lebih besar dari jam mulai.";
-  }
-
-  if (empty($errors)) {
-    $stmt = $pdo->prepare("
-      SELECT * FROM bookings 
-      WHERE room_id = ? AND date = ? 
-      AND start_time < ? AND end_time > ? 
-      AND status != 'rejected'
-    ");
-    $stmt->execute([$room_id, $date, $end_time, $start_time]);
-    $conflict = $stmt->fetch();
-
-    if ($conflict) {
-      $errors[] = "Jadwal bentrok dengan peminjaman lain.";
-    } else {
-      $stmt = $pdo->prepare("
-        INSERT INTO bookings 
-        (name, dinas, bidang, phone, room_id, date, start_time, end_time, status) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending')
-      ");
-      $stmt->execute([$name, $dinas, $bidang, $phone, $room_id, $date, $start_time, $end_time]);
-      $success = "✅ Peminjaman berhasil diajukan.";
+    // Validasi CSRF
+    if ($csrf_token !== $_SESSION['csrf_token']) {
+        $errors[] = "Token tidak valid.";
     }
-  }
+
+    // Validasi form
+    if (!$name || !$dinas || !$bidang || !$phone || !$room_id || !$date || !$start_time || !$end_time) {
+        $errors[] = "Semua kolom wajib diisi.";
+    }
+
+    if (!preg_match('/^[0-9]{10,15}$/', $phone)) {
+        $errors[] = "Nomor HP tidak valid.";
+    }
+
+    if (strtotime($end_time) <= strtotime($start_time)) {
+        $errors[] = "Waktu selesai harus lebih besar dari waktu mulai.";
+    }
+
+    // Cek bentrok jadwal (logika lengkap dari kode pertama)
+    if (empty($errors)) {
+        $stmt = $pdo->prepare("
+            SELECT * FROM bookings 
+            WHERE room_id = ? 
+              AND date = ? 
+              AND status IN ('pending', 'approved')
+              AND (
+                (start_time <= ? AND end_time > ?)  
+                OR (start_time < ? AND end_time >= ?) 
+                OR (start_time >= ? AND end_time <= ?) 
+              )
+        ");
+        $stmt->execute([
+            $room_id, 
+            $date,
+            $start_time, $start_time, 
+            $end_time, $end_time,     
+            $start_time, $end_time    
+        ]);
+
+        if ($stmt->fetch()) {
+            $errors[] = "❌ Jadwal bentrok dengan peminjaman lain di ruangan ini.";
+        }
+    }
+
+// Simpan data jika valid
+if (empty($errors)) {
+    // Generate token unik untuk pembatalan
+    $cancel_token = bin2hex(random_bytes(16));
+
+    $stmt = $pdo->prepare("
+        INSERT INTO bookings (name, dinas, bidang, phone, room_id, date, start_time, end_time, status, cancel_token, created_at) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?, NOW())
+    ");
+    $stmt->execute([
+        $name, $dinas, $bidang, $phone, $room_id, $date, $start_time, $end_time, $cancel_token
+    ]);
+
+    $success = "✅ Peminjaman berhasil diajukan.<br>
+                <a href='batalkan.php?token={$cancel_token}' class='text-red-600 underline'>Batalkan Booking</a>";
+
+    // Reset form
+    $_POST = [];
+}
 }
 
+// Ambil daftar ruangan
 $rooms = $pdo->query("SELECT * FROM rooms")->fetchAll();
 ?>
 

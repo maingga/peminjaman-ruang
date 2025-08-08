@@ -2,6 +2,7 @@
 require_once 'inc/db.php';
 $rooms = $pdo->query("SELECT * FROM rooms")->fetchAll();
 $today = date('Y-m-d');
+$currentTime = date('H:i:s');
 ?>
 
 <?php include 'inc/header.php'; ?>
@@ -13,7 +14,17 @@ $today = date('Y-m-d');
       Live Jadwal Peminjaman - <?= date('d M Y') ?>
     </h2>
 
-    <?php foreach ($rooms as $room): ?>
+    <!-- Countdown ke jadwal terdekat -->
+    <div id="countdownBox" class="mb-8 text-center hidden">
+      <p class="text-lg text-gray-800 dark:text-gray-200 font-semibold">Jadwal terdekat dimulai dalam:</p>
+      <span id="countdownTimer" class="text-3xl font-bold text-[#0D47A1] dark:text-yellow-400"></span>
+    </div>
+
+    <?php
+    $nextEventTime = null; // simpan untuk countdown global
+
+    foreach ($rooms as $room):
+    ?>
       <div class="mb-10" data-aos="fade-up" data-aos-delay="100">
         <div class="bg-white dark:bg-gray-800 shadow-lg rounded-2xl overflow-hidden">
           <div class="bg-[#0D47A1] text-white px-6 py-4">
@@ -41,8 +52,21 @@ $today = date('Y-m-d');
                     <td colspan="5" class="px-4 py-4 text-center text-gray-500 dark:text-gray-400">Belum ada peminjaman hari ini.</td>
                   </tr>
                 <?php else:
-                  foreach ($bookings as $booking): ?>
-                    <tr class="<?= ($booking['status'] === 'approved') ? 'bg-green-50 dark:bg-green-900/30' : (($booking['status'] === 'rejected') ? 'bg-red-50 dark:bg-red-900/30' : '') ?>">
+                  foreach ($bookings as $booking):
+                    $highlight = "";
+                    if ($booking['date'] === $today) {
+                      $highlight = "bg-yellow-100 dark:bg-yellow-900/30"; // highlight hari ini
+                    }
+
+                    // Cari jadwal terdekat yang belum mulai
+                    if ($booking['start_time'] > $currentTime) {
+                      $eventTimestamp = strtotime($booking['date'] . ' ' . $booking['start_time']);
+                      if ($nextEventTime === null || $eventTimestamp < $nextEventTime) {
+                        $nextEventTime = $eventTimestamp;
+                      }
+                    }
+                ?>
+                    <tr class="<?= $highlight ?> <?= ($booking['status'] === 'approved') ? 'border-l-4 border-green-500' : (($booking['status'] === 'rejected') ? 'border-l-4 border-red-500' : '') ?>">
                       <td class="px-4 py-2"><?= htmlspecialchars($booking['name']) ?></td>
                       <td class="px-4 py-2"><?= htmlspecialchars($booking['dinas']) ?></td>
                       <td class="px-4 py-2"><?= htmlspecialchars($booking['bidang']) ?></td>
@@ -71,5 +95,35 @@ $today = date('Y-m-d');
 
 <?php include 'inc/footer.php'; ?>
 
-<!-- Tambahkan JS jika belum -->
 <script src="assets/js/navbar.js"></script>
+
+<!-- Script Countdown -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const nextEventTime = <?= $nextEventTime ? $nextEventTime * 1000 : 'null' ?>;
+    if (nextEventTime) {
+        const countdownBox = document.getElementById("countdownBox");
+        const countdownTimer = document.getElementById("countdownTimer");
+        countdownBox.classList.remove("hidden");
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = nextEventTime - now;
+
+            if (distance <= 0) {
+                countdownTimer.textContent = "Sedang berlangsung!";
+                return;
+            }
+
+            const hours = Math.floor((distance / (1000 * 60 * 60)));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            countdownTimer.textContent = `${hours}j ${minutes}m ${seconds}d`;
+        }
+
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+    }
+});
+</script>
