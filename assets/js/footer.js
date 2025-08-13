@@ -1,50 +1,50 @@
-// Countdown Script
-const target = new Date(new Date().getTime() + 30 * 60 * 1000); // +30 menit
-const countdown = document.getElementById('countdown');
+// Countdown
+const countdownElem = document.getElementById('countdown');
+if (countdownElem) {
+  const targetAttr = countdownElem.getAttribute('data-target');
+  if (targetAttr) {
+    const targetDate = new Date(targetAttr).getTime();
 
-function updateCountdown() {
-  const now = new Date();
-  const diff = target - now;
-  if (diff <= 0) {
-    countdown.innerText = "Sedang Berlangsung";
-    return;
+    function updateCountdown() {
+      const now = Date.now();
+      const diff = targetDate - now;
+
+      if (diff <= 0) {
+        countdownElem.innerText = "Sedang Berlangsung";
+        return;
+      }
+
+      const h = String(Math.floor(diff / (1000 * 60 * 60))).padStart(2, '0');
+      const m = String(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
+      const s = String(Math.floor((diff % (1000 * 60)) / 1000)).padStart(2, '0');
+
+      countdownElem.innerText = `${h}:${m}:${s}`;
+    }
+
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+  } else {
+    countdownElem.innerText = "Tidak ada jadwal";
   }
-  const h = String(Math.floor(diff / 3600000)).padStart(2, '0');
-  const m = String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0');
-  const s = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
-  countdown.innerText = `${h}:${m}:${s}`;
 }
 
-if (countdown) {
-  updateCountdown();
-  setInterval(updateCountdown, 1000);
-}
-
-// Dark Mode Toggle Script with localStorage
+// Dark Mode Toggle
 const toggleBtn = document.getElementById('darkToggle');
 const html = document.documentElement;
 
-// Fungsi set mode tema
 function setTheme(mode) {
   if (mode === 'dark') {
     html.classList.add('dark');
-    toggleBtn.innerText = '☀️';
+    if (toggleBtn) toggleBtn.innerText = '☀️';
   } else {
     html.classList.remove('dark');
-    toggleBtn.innerText = '🌙';
+    if (toggleBtn) toggleBtn.innerText = '🌙';
   }
 }
 
-// Cek preferensi dari localStorage saat load
 const savedTheme = localStorage.getItem('theme');
-if (savedTheme) {
-  setTheme(savedTheme);
-} else {
-  // Jika belum ada preferensi, pakai default: light
-  setTheme('light');
-}
+setTheme(savedTheme || 'light');
 
-// Event toggle
 if (toggleBtn) {
   toggleBtn.addEventListener('click', () => {
     const isDark = html.classList.contains('dark');
@@ -55,7 +55,10 @@ if (toggleBtn) {
 }
 
 // Dynamic Year
-document.getElementById("year").textContent = new Date().getFullYear();
+const yearElem = document.getElementById("year");
+if (yearElem) {
+  yearElem.textContent = new Date().getFullYear();
+}
 
 // AOS Init
 if (typeof AOS !== 'undefined') {

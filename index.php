@@ -1,8 +1,25 @@
+<?php
+require_once 'inc/db.php';
+
+// Ambil rapat terdekat yang belum mulai
+$stmt = $pdo->prepare("
+    SELECT b.date, b.start_time, r.name AS room_name
+    FROM bookings b
+    JOIN rooms r ON b.room_id = r.id
+    WHERE CONCAT(b.date, ' ', b.start_time) > NOW()
+    ORDER BY CONCAT(b.date, ' ', b.start_time) ASC 
+    LIMIT 1
+");
+$stmt->execute();
+$nextMeeting = $stmt->fetch(PDO::FETCH_ASSOC);
+$targetTime = $nextMeeting ? $nextMeeting['date'] . ' ' . $nextMeeting['start_time'] : null;
+?>
+
 <?php include 'inc/header.php'; ?>
 <?php include 'inc/navbar.php'; ?>
 
 <!-- Hero -->
-<section class="relative bg-cover bg-center h-[600px] md:h-[700px] transition-all duration-500" style="background-image: url('assets/images/ruang-rapat.jpeg');">
+<section class="relative bg-cover bg-center h-[600px] md:h-[700px]" style="background-image: url('assets/images/ruang-rapat.jpeg');">
   <div class="absolute inset-0 bg-gradient-to-br from-black/60 via-black/40 to-black/60 flex items-center justify-center">
     <div class="text-white text-center px-4" data-aos="zoom-in-up" data-aos-duration="1000">
       <h1 class="text-4xl md:text-6xl font-extrabold leading-tight mb-4">
@@ -23,10 +40,19 @@
 <section class="py-16 bg-white dark:bg-gray-900 text-center" data-aos="fade-up">
   <div class="max-w-xl mx-auto">
     <h2 class="text-3xl font-bold text-[#0D47A1] dark:text-white mb-4">Rapat Selanjutnya Dalam:</h2>
-    <div id="countdown" class="text-5xl md:text-6xl font-mono font-semibold text-[#1976D2] dark:text-yellow-400 tracking-widest">
-      00:00:00
+    <div id="countdown" 
+         data-target="<?php echo $targetTime ? htmlspecialchars($targetTime) : ''; ?>" 
+         class="text-5xl md:text-6xl font-mono font-semibold text-[#1976D2] dark:text-yellow-400 tracking-widest">
+      <?php echo $targetTime ? '00:00:00' : 'Tidak ada jadwal'; ?>
     </div>
-    <p class="mt-4 text-gray-600 dark:text-gray-300 text-base">Pantau waktu mulai agar tidak terlewat.</p>
+    <?php if ($nextMeeting): ?>
+      <p class="mt-4 text-gray-600 dark:text-gray-300 text-base">
+        📍 <strong><?php echo htmlspecialchars($nextMeeting['room_name']); ?></strong><br>
+        🗓 <?php echo date('d M Y', strtotime($nextMeeting['date'])); ?> — ⏰ <?php echo date('H:i', strtotime($nextMeeting['start_time'])); ?>
+      </p>
+    <?php else: ?>
+      <p class="mt-4 text-gray-600 dark:text-gray-300 text-base">Tidak ada jadwal rapat berikutnya.</p>
+    <?php endif; ?>
   </div>
 </section>
 
@@ -68,5 +94,6 @@
 
 <?php include 'inc/footer.php'; ?>
 
-<!-- Tambahkan ini sebelum </body> -->
+<!-- Script -->
 <script src="assets/js/navbar.js"></script>
+<script src="assets/js/footer.js"></script>

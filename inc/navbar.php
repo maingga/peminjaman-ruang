@@ -10,6 +10,7 @@
     <div class="hidden md:flex items-center gap-8 text-base font-medium">
       <a href="ajukan.php" class="hover:text-secondary transition-colors duration-300">Ajukan</a>
       <a href="jadwal.php" class="hover:text-secondary transition-colors duration-300">Jadwal</a>
+      <a href="riwayat.php" class="hover:text-secondary transition-colors duration-300">Riwayat</a>
       <a href="admin/login.php" class="bg-secondary hover:bg-secondary/90 text-white px-4 py-2 rounded-md shadow-md transition-all duration-300">Login Admin</a>
     </div>
 
@@ -25,6 +26,7 @@
   <div id="mobile-menu" class="hidden md:hidden bg-primary/90 backdrop-blur px-6 pb-4 pt-2 space-y-2 transition-all duration-300 ease-in-out text-sm font-medium dark:bg-gray-800">
     <a href="ajukan.php" class="block py-2 hover:text-secondary transition">Ajukan</a>
     <a href="jadwal.php" class="block py-2 hover:text-secondary transition">Jadwal</a>
+    <a href="riwayat.php" class="block py-2 hover:text-secondary transition">Riwayat</a>
     <a href="admin/login.php" class="block py-2 text-secondary font-semibold hover:underline">Login Admin</a>
   </div>
 </nav>

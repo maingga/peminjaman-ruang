@@ -67,7 +67,7 @@ include '../inc/header.php';
         <select name="ruangan" id="ruangan" class="flex-1 min-w-[160px] border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 dark:text-gray-100 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
           <option value="">Semua Ruangan</option>
           <?php foreach($rooms as $room): ?>
-            <option value="<?= $room['id'] ?>"><?= htmlspecialchars($room['name']) ?></option>
+            <option value="<?= htmlspecialchars($room['id']) ?>"><?= htmlspecialchars($room['name']) ?></option>
           <?php endforeach; ?>
         </select>
         <button type="submit" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-400 rounded-lg text-white font-semibold shadow-md transition select-none">
@@ -103,79 +103,9 @@ include '../inc/header.php';
 
 <?php include '../inc/footer.php'; ?>
 
-<!-- FullCalendar -->
-<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/main.min.css" rel="stylesheet" />
-<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/main.min.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  const calendarEl = document.getElementById('calendar');
-  const modal = document.getElementById('eventModal');
-  const approveBtn = document.getElementById('approveBtn');
-  const rejectBtn = document.getElementById('rejectBtn');
-  let currentEventId = null;
+<!-- FullCalendar v5.11.3 -->
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
 
-  const calendar = new FullCalendar.Calendar(calendarEl, {
-    initialView: 'dayGridMonth',
-    locale: 'id',
-    themeSystem: 'standard',
-    headerToolbar: {
-      left: 'prev,next today',
-      center: 'title',
-      right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
-    },
-    buttonText: {
-      today: 'Hari ini',
-      month: 'Bulan',
-      week: 'Minggu',
-      day: 'Hari',
-      list: 'Daftar'
-    },
-    events: {
-      url: 'load_events.php',
-      method: 'GET',
-      extraParams: () => ({
-        status: document.getElementById('status').value,
-        ruangan: document.getElementById('ruangan').value,
-      }),
-    },
-    eventClick: info => {
-      currentEventId = info.event.id;
-      document.getElementById('modalTitle').textContent = info.event.title;
-      document.getElementById('modalTime').textContent = new Date(info.event.start).toLocaleString('id-ID', {
-        dateStyle: 'full',
-        timeStyle: 'short',
-      });
-      document.getElementById('modalRoom').textContent = `Ruangan: ${info.event.extendedProps.room || '-'}`;
-      modal.classList.remove('hidden');
-    }
-  });
-
-  calendar.render();
-
-  document.getElementById('filterForm').addEventListener('submit', e => {
-    e.preventDefault();
-    calendar.refetchEvents();
-  });
-
-  approveBtn.addEventListener('click', () => {
-    if (confirm("Setujui peminjaman ini?")) {
-      window.location.href = `approve.php?id=${currentEventId}&action=approve`;
-    }
-  });
-
-  rejectBtn.addEventListener('click', () => {
-    if (confirm("Tolak peminjaman ini?")) {
-      window.location.href = `approve.php?id=${currentEventId}&action=reject`;
-    }
-  });
-});
-
-function closeModal() {
-  const modal = document.getElementById('eventModal');
-  modal.classList.add('hidden');
-}
-</script>
-
-<script>
-  feather.replace();
-</script>
+<!-- Feather icons -->
+<script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>

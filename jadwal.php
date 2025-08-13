@@ -1,5 +1,9 @@
 <?php
+// Set timezone ke Asia/Jakarta supaya date() dan waktu sesuai waktu lokal
+date_default_timezone_set('Asia/Jakarta');
+
 require_once 'inc/db.php';
+
 $rooms = $pdo->query("SELECT * FROM rooms")->fetchAll();
 $today = date('Y-m-d');
 $currentTime = date('H:i:s');

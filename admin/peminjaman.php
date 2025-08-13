@@ -22,6 +22,22 @@ include '../inc/header.php';
         Daftar Peminjaman Ruangan
       </h1>
 
+          <!-- Tombol Export -->
+          <div class="mb-6 flex flex-wrap gap-3">
+            <a href="export.php?type=csv" 
+              class="flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white text-sm font-semibold shadow-md transition-transform transform hover:scale-105 active:scale-95">
+              <i data-feather="file-text" class="w-4 h-4"></i>
+              CSV
+            </a>
+
+            <a href="export.php?type=excel" 
+              class="flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white text-sm font-semibold shadow-md transition-transform transform hover:scale-105 active:scale-95">
+              <i data-feather="grid" class="w-4 h-4"></i>
+              Excel
+            </a>
+          </div>
+          <!-- End Tombol Export -->
+
       <?php
       $query = "SELECT b.*, r.name AS room_name 
                 FROM bookings b
