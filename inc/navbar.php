@@ -3,7 +3,7 @@
     <!-- Logo / Brand -->
     <a href="index.php" class="text-2xl font-semibold tracking-tight flex items-center gap-2">
       <img src="assets/images/favicon.svg" alt="Logo" class="w-7 h-7" />
-      <span>Diskominfo</span>
+      <span>Dinas Komunikasi dan Informatika Kabupaten Kediri</span>
     </a>
 
     <!-- Desktop Navigation -->
