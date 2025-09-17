@@ -32,6 +32,10 @@ include '../inc/header.php';
   <div class="flex">
     <?php include 'components/sidebar.php'; ?>
 
+                <!-- Overlay untuk mobile -->
+    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden md:hidden transition-opacity duration-300 pointer-events-none"></div>
+
+
     <main class="flex-1 p-6">
       <div class="max-w-2xl mx-auto bg-white dark:bg-gray-900 rounded-xl shadow-xl p-8 transition-all duration-500">
         <h1 class="text-3xl font-bold mb-6 flex items-center gap-3 text-blue-700 dark:text-blue-400">
@@ -84,5 +88,9 @@ include '../inc/header.php';
     }
   });
 </script>
+
+<!-- Script interaksi dashboard -->
+<script src="../assets/js/dashboard.js"></script>
+
 
 <?php include '../inc/footer.php'; ?>

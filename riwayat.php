@@ -113,3 +113,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </section>
 
 <?php include 'inc/footer.php'; ?>
+
+<!-- JS -->
+<script src="assets/js/navbar.js"></script>

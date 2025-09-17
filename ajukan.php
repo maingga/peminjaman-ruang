@@ -178,3 +178,6 @@ $rooms = $pdo->query("SELECT * FROM rooms")->fetchAll();
 </section>
 
 <?php include 'inc/footer.php'; ?>
+
+<!-- JS -->
+<script src="assets/js/navbar.js"></script>

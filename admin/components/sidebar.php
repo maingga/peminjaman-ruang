@@ -22,6 +22,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
       ['ruangan.php', 'layout', 'Ruangan'],
       ['jadwal.php', 'calendar', 'Jadwal'],
       ['pengguna.php', 'user', 'Pengguna'],
+      ['edit_hero.php', 'image', 'Edit Hero'], // <-- Tambahan menu Edit Hero
     ];
 
     foreach ($navItems as [$url, $icon, $label]) {

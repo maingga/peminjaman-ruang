@@ -47,6 +47,10 @@ include '../inc/header.php';
   <div class="flex min-h-screen">
     <?php include 'components/sidebar.php'; ?>
 
+                <!-- Overlay untuk mobile -->
+    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden md:hidden transition-opacity duration-300 pointer-events-none"></div>
+
+
     <main class="flex-1 p-6 md:p-10 overflow-auto">
       <!-- Header -->
       <div class="flex justify-between items-center mb-8">
@@ -107,5 +111,15 @@ include '../inc/header.php';
 <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
 
-<!-- Feather icons -->
+<!-- Feather Icons -->
 <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+<script>
+  feather.replace(); // aktifkan ikon feather
+</script>
+
+<!-- Script interaksi dashboard -->
+<script src="../assets/js/dashboard.js"></script>
+
+
+</body>
+</html>

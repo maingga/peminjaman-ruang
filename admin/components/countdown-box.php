@@ -17,7 +17,7 @@ $targetTime = $nextMeeting ? $nextMeeting['date'] . ' ' . $nextMeeting['start_ti
 
 <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md">
     <h2 class="text-2xl font-bold mb-2 flex items-center gap-2">
-        <i data-feather="timer" class="w-6 h-6 text-red-500"></i>
+        <i data-feather="clock" class="w-6 h-6 text-red-500"></i>
         Countdown ke Jadwal Terdekat
     </h2>
     <p class="text-gray-600 dark:text-gray-300 mb-4">Waktu menuju peminjaman berikutnya:</p>

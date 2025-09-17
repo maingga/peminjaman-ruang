@@ -42,6 +42,10 @@ include '../inc/header.php';
   <div class="flex">
     <?php include 'components/sidebar.php'; ?>
 
+                        <!-- Overlay untuk mobile -->
+    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden md:hidden transition-opacity duration-300 pointer-events-none"></div>
+
+
     <main class="flex-1 p-6 mt-6 md:mt-0 max-w-xl mx-auto">
       <h1 class="text-3xl font-bold mb-8 flex items-center gap-3">
         <i data-feather="edit" class="w-8 h-8 text-blue-600 dark:text-blue-400"></i>
@@ -88,5 +92,9 @@ include '../inc/header.php';
 <script>
   feather.replace();
 </script>
+
+<!-- Script interaksi dashboard -->
+<script src="../assets/js/dashboard.js"></script>
+
 
 <?php include '../inc/footer.php'; ?>

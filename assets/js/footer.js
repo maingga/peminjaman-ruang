@@ -1,71 +1,85 @@
-// Countdown
-const countdownElem = document.getElementById('countdown');
-if (countdownElem) {
-  const targetAttr = countdownElem.getAttribute('data-target');
-  if (targetAttr) {
-    const targetDate = new Date(targetAttr).getTime();
+document.addEventListener("DOMContentLoaded", () => {
 
-    function updateCountdown() {
-      const now = Date.now();
-      const diff = targetDate - now;
+  // =======================
+  // Countdown Multi-Ruangan
+  // =======================
+  const countdownElems = document.querySelectorAll(".countdown");
 
-      if (diff <= 0) {
-        countdownElem.innerText = "Sedang Berlangsung";
+  countdownElems.forEach(el => {
+    function startCountdown(target) {
+      if (!target) {
+        el.textContent = "Tidak ada jadwal";
         return;
       }
 
-      const h = String(Math.floor(diff / (1000 * 60 * 60))).padStart(2, '0');
-      const m = String(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
-      const s = String(Math.floor((diff % (1000 * 60)) / 1000)).padStart(2, '0');
+      let endTime = new Date(target).getTime();
 
-      countdownElem.innerText = `${h}:${m}:${s}`;
+      const timer = setInterval(() => {
+        const now = Date.now();
+        let distance = endTime - now;
+
+        if (distance <= 0) {
+          clearInterval(timer);
+          el.textContent = "Rapat dimulai!";
+          return;
+        }
+
+        const hours = Math.floor(distance / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        el.textContent = `${hours.toString().padStart(2,'0')}:${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
+      }, 1000);
     }
 
-    updateCountdown();
-    setInterval(updateCountdown, 1000);
-  } else {
-    countdownElem.innerText = "Tidak ada jadwal";
-  }
-}
-
-// Dark Mode Toggle
-const toggleBtn = document.getElementById('darkToggle');
-const html = document.documentElement;
-
-function setTheme(mode) {
-  if (mode === 'dark') {
-    html.classList.add('dark');
-    if (toggleBtn) toggleBtn.innerText = '☀️';
-  } else {
-    html.classList.remove('dark');
-    if (toggleBtn) toggleBtn.innerText = '🌙';
-  }
-}
-
-const savedTheme = localStorage.getItem('theme');
-setTheme(savedTheme || 'light');
-
-if (toggleBtn) {
-  toggleBtn.addEventListener('click', () => {
-    const isDark = html.classList.contains('dark');
-    const newTheme = isDark ? 'light' : 'dark';
-    setTheme(newTheme);
-    localStorage.setItem('theme', newTheme);
+    const target = el.getAttribute("data-target");
+    startCountdown(target);
   });
-}
 
-// Dynamic Year
-const yearElem = document.getElementById("year");
-if (yearElem) {
-  yearElem.textContent = new Date().getFullYear();
-}
+  // =======================
+  // Dark Mode Toggle
+  // =======================
+  const toggleBtn = document.getElementById('darkToggle');
+  const html = document.documentElement;
 
-// AOS Init
-if (typeof AOS !== 'undefined') {
-  AOS.init({
-    duration: 800,
-    once: true,
-    easing: 'ease-in-out',
-    offset: 50,
-  });
-}
+  function setTheme(mode) {
+    if (mode === 'dark') {
+      html.classList.add('dark');
+      if (toggleBtn) toggleBtn.innerText = '☀️';
+    } else {
+      html.classList.remove('dark');
+      if (toggleBtn) toggleBtn.innerText = '🌙';
+    }
+  }
+
+  const savedTheme = localStorage.getItem('theme');
+  setTheme(savedTheme || 'light');
+
+  if (toggleBtn) {
+    toggleBtn.addEventListener('click', () => {
+      const isDark = html.classList.contains('dark');
+      const newTheme = isDark ? 'light' : 'dark';
+      setTheme(newTheme);
+      localStorage.setItem('theme', newTheme);
+    });
+  }
+
+  // =======================
+  // Dynamic Year
+  // =======================
+  const yearElem = document.getElementById("year");
+  if (yearElem) yearElem.textContent = new Date().getFullYear();
+
+  // =======================
+  // AOS Init
+  // =======================
+  if (typeof AOS !== 'undefined') {
+    AOS.init({
+      duration: 800,
+      once: true,
+      easing: 'ease-in-out',
+      offset: 50,
+    });
+  }
+
+});
